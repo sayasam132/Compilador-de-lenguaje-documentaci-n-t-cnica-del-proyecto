@@ -36,8 +36,22 @@ typedef struct SymbolEntry {
     struct SymbolEntry *next;
 } SymbolEntry;
 
-extern SymbolEntry *root_table;
+/*
+ * Un nivel de la pila de scopes.
+ * Cada bloque { } tiene su propia tabla (lista enlazada de SymbolEntry).
+ */
+typedef struct ScopeLevel {
+    SymbolEntry       *table; /* lista de variables de este nivel */
+    struct ScopeLevel *prev;  /* nivel anterior (mas abajo en la pila) */
+} ScopeLevel;
 
+extern ScopeLevel *current_scope; /* tope de la pila */
+
+/* Gestion de scopes */
+void         push_scope(void);
+void         pop_scope(void);
+
+/* Operaciones de simbolos — mismas firmas que antes */
 SymbolEntry *create_entry(const char *name);
 SymbolEntry *find_entry(const char *name);
 

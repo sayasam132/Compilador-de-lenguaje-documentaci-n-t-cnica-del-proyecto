@@ -25,6 +25,7 @@ extern FILE *yyin;
 %token LET AS SHOW ASSIGN SEMI LPAREN RPAREN
 %token T_NUM T_DEC T_LETTER T_WORD T_BOOL
 %token PLUS MINUS STAR SLASH
+%token LBRACE RBRACE                             /* { y } para bloques */
 
 /* ── Tokens con valor ──────────────────────────────────── */
 %token <entry> IDENTIFIER
@@ -54,6 +55,16 @@ program
 statement
     : declaration SEMI
     | show_stmt   SEMI
+    | block
+    ;
+
+/*
+ * block: un bloque { } abre un scope nuevo al entrar
+ * y lo cierra al salir. Las variables declaradas adentro
+ * mueren cuando el bloque termina.
+ */
+block
+    : LBRACE { push_scope(); } program RBRACE { pop_scope(); }
     ;
 
 /*
@@ -147,7 +158,11 @@ int main(int argc, char **argv) {
         yyin = f;
     }
 
+    push_scope();        /* abre el scope global antes de parsear */
+
     int result = yyparse();
+
+    pop_scope();         /* limpia el scope global al terminar */
 
     if (result == 0) {
         printf("[OK] Compilacion exitosa\n");

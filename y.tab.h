@@ -70,12 +70,14 @@ extern int yydebug;
     MINUS = 271,                   /* MINUS  */
     STAR = 272,                    /* STAR  */
     SLASH = 273,                   /* SLASH  */
-    IDENTIFIER = 274,              /* IDENTIFIER  */
-    INT_LIT = 275,                 /* INT_LIT  */
-    FLOAT_LIT = 276,               /* FLOAT_LIT  */
-    CHAR_LIT = 277,                /* CHAR_LIT  */
-    BOOL_LIT = 278,                /* BOOL_LIT  */
-    STRING_LIT = 279               /* STRING_LIT  */
+    LBRACE = 274,                  /* LBRACE  */
+    RBRACE = 275,                  /* RBRACE  */
+    IDENTIFIER = 276,              /* IDENTIFIER  */
+    INT_LIT = 277,                 /* INT_LIT  */
+    FLOAT_LIT = 278,               /* FLOAT_LIT  */
+    CHAR_LIT = 279,                /* CHAR_LIT  */
+    BOOL_LIT = 280,                /* BOOL_LIT  */
+    STRING_LIT = 281               /* STRING_LIT  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -100,12 +102,14 @@ extern int yydebug;
 #define MINUS 271
 #define STAR 272
 #define SLASH 273
-#define IDENTIFIER 274
-#define INT_LIT 275
-#define FLOAT_LIT 276
-#define CHAR_LIT 277
-#define BOOL_LIT 278
-#define STRING_LIT 279
+#define LBRACE 274
+#define RBRACE 275
+#define IDENTIFIER 276
+#define INT_LIT 277
+#define FLOAT_LIT 278
+#define CHAR_LIT 279
+#define BOOL_LIT 280
+#define STRING_LIT 281
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -121,7 +125,7 @@ union YYSTYPE
     int    type_tag; /* tipos de dato        */
     struct SymbolEntry *entry; /* IDENTIFIER */
 
-#line 125 "y.tab.h"
+#line 129 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

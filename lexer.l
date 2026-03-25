@@ -15,12 +15,14 @@ WS      [ \t\r\n]+
 INT_NUM {DIGIT}+
 FLT_NUM {DIGIT}+"."{DIGIT}+
 STRING  \"(\\.|[^"\\])*\"
-COMMENT "--"[^\n]*
+COMMENT      "--"[^\n]*
+COMMENT_BLOCK "---"([^-]|-[^-]|--[^-])*"---"
 
 %%
 
-{WS}        { }
-{COMMENT}   { }
+{WS}            { }
+{COMMENT}       { }    /* -- comentario de una linea  */
+{COMMENT_BLOCK} { }    /* --- comentario de bloque --- */
 
 "let"       { return LET;     }
 "as"        { return AS;      }
@@ -43,6 +45,8 @@ COMMENT "--"[^\n]*
 "/"         { return SLASH;   }
 "("         { return LPAREN;  }
 ")"         { return RPAREN;  }
+"{"         { return LBRACE;  }
+"}"         { return RBRACE;  }
 
 {FLT_NUM}   { yylval.f_val = atof(yytext); return FLOAT_LIT; }
 {INT_NUM}   { yylval.i_val = atoi(yytext); return INT_LIT;   }

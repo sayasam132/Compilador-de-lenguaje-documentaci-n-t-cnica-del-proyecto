@@ -1,7 +1,7 @@
 -- ============================================================
--- source.ws — programa de prueba del lenguaje propio
+-- source.ws — prueba del lenguaje
 -- ============================================================
-
+---
 -- Tipos de dato basicos
 let edad     as num    = 22;
 let precio   as dec    = 9.99;
@@ -9,6 +9,7 @@ let inicial  as letter = 'K';
 let saludo   as word   = "Hola mundo";
 let activo   as bool   = yes;
 let inactivo as bool   = no;
+let error as bool   = hola;
 
 -- Expresiones aritmeticas con + y -
 let suma  as num = edad + 8;
@@ -31,3 +32,16 @@ show resta;
 show producto;
 show resultado;
 show cociente;
+show error;
+---
+
+let x as num = 1;
+{
+    let x as num = 42;
+    {
+        let x as num = 99;
+        show x;        -- imprime 99
+    }
+    show x;            -- imprime 42
+}
+show x;                -- imprime 1
