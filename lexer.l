@@ -59,9 +59,10 @@ COMMENT_BLOCK "---"([^-]|-[^-]|--[^-])*"---"
 }
 
 {ID}        {
-    SymbolEntry *node = find_entry(yytext);
-    if (!node) node = create_entry(yytext);
-    yylval.entry = node;
+    /* El lexer solo entrega el nombre como cadena.
+     * Crear o buscar la entrada es responsabilidad del parser,
+     * segun el contexto (declaracion vs uso). */
+    yylval.s_val = strdup(yytext);
     return IDENTIFIER;
 }
 

@@ -16,9 +16,8 @@ extern FILE *yyin;
     double f_val;    /* FLOAT_LIT y expr     */
     char   c_val;    /* CHAR_LIT             */
     int    b_val;    /* BOOL_LIT             */
-    char  *s_val;    /* STRING_LIT           */
+    char  *s_val;    /* STRING_LIT e IDENTIFIER */
     int    type_tag; /* tipos de dato        */
-    struct SymbolEntry *entry; /* IDENTIFIER */
 }
 
 /* ── Tokens sin valor ──────────────────────────────────── */
@@ -28,7 +27,7 @@ extern FILE *yyin;
 %token LBRACE RBRACE                             /* { y } para bloques */
 
 /* ── Tokens con valor ──────────────────────────────────── */
-%token <entry> IDENTIFIER
+%token <s_val> IDENTIFIER
 %token <i_val> INT_LIT
 %token <f_val> FLOAT_LIT
 %token <c_val> CHAR_LIT
@@ -84,25 +83,41 @@ num_type
  *   let nombre as num    = expr;
  *   let nombre as word   = "cadena";
  *   let nombre as bool   = yes/no;
+ *
+ * Se llama create_entry para insertar SIEMPRE en el scope
+ * actual (el mas interno), logrando el shadowing correcto.
  */
 declaration
     : LET IDENTIFIER AS num_type ASSIGN expr {
-        $2->data_type = (DataType)$4;
-        assign_numeric_value($2, (DataType)$4, $6);
+        SymbolEntry *e = create_entry($2);
+        free($2);
+        if (e) {
+            e->data_type = (DataType)$4;
+            assign_numeric_value(e, (DataType)$4, $6);
+        }
     }
     | LET IDENTIFIER AS T_WORD ASSIGN STRING_LIT {
-        $2->data_type = TYPE_WORD;
-        assign_string_value($2, TYPE_WORD, $6);
+        SymbolEntry *e = create_entry($2);
+        free($2);
+        if (e) assign_string_value(e, TYPE_WORD, $6);
+        free($6);
     }
     | LET IDENTIFIER AS T_BOOL ASSIGN BOOL_LIT {
-        $2->data_type = TYPE_BOOL;
-        $2->data.b_value = $6;
+        SymbolEntry *e = create_entry($2);
+        free($2);
+        if (e) {
+            e->data_type = TYPE_BOOL;
+            e->data.b_value = $6;
+        }
     }
     ;
 
 /*
  * expr: expresiones aritmeticas.
  * Soporta literales, variables, +, -, *, / y parentesis.
+ *
+ * Se llama find_entry para buscar desde el scope mas interno
+ * hacia afuera — el primer match gana (shadowing).
  */
 expr
     : INT_LIT              { $$ = (double)$1; }
@@ -110,15 +125,22 @@ expr
     | CHAR_LIT             { $$ = (double)$1;  }
     | BOOL_LIT             { $$ = (double)$1;  }
     | IDENTIFIER {
-        switch ($1->data_type) {
-            case TYPE_NUM:    $$ = (double)$1->data.i_value; break;
-            case TYPE_DEC:    $$ = $1->data.d_value;          break;
-            case TYPE_LETTER: $$ = (double)$1->data.c_value;  break;
-            case TYPE_BOOL:   $$ = (double)$1->data.b_value;  break;
-            case TYPE_WORD:
-                printf("[ERROR] No se puede operar con tipo word\n");
-                $$ = 0;
-                break;
+        SymbolEntry *e = find_entry($1);
+        free($1);
+        if (!e) {
+            yyerror("Variable no declarada");
+            $$ = 0;
+        } else {
+            switch (e->data_type) {
+                case TYPE_NUM:    $$ = (double)e->data.i_value; break;
+                case TYPE_DEC:    $$ = e->data.d_value;          break;
+                case TYPE_LETTER: $$ = (double)e->data.c_value;  break;
+                case TYPE_BOOL:   $$ = (double)e->data.b_value;  break;
+                case TYPE_WORD:
+                    printf("[ERROR] No se puede operar con tipo word\n");
+                    $$ = 0;
+                    break;
+            }
         }
     }
     | expr PLUS  expr { $$ = $1 + $3; }
@@ -137,7 +159,12 @@ expr
 
 /* show nombre; — imprime el valor de la variable */
 show_stmt
-    : SHOW IDENTIFIER { print_entry($2); }
+    : SHOW IDENTIFIER {
+        SymbolEntry *e = find_entry($2);
+        free($2);
+        if (e) print_entry(e);
+        else   yyerror("Variable no declarada");
+    }
     ;
 
 %%

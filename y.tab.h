@@ -121,11 +121,10 @@ union YYSTYPE
     double f_val;    /* FLOAT_LIT y expr     */
     char   c_val;    /* CHAR_LIT             */
     int    b_val;    /* BOOL_LIT             */
-    char  *s_val;    /* STRING_LIT           */
+    char  *s_val;    /* STRING_LIT e IDENTIFIER */
     int    type_tag; /* tipos de dato        */
-    struct SymbolEntry *entry; /* IDENTIFIER */
 
-#line 129 "y.tab.h"
+#line 128 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

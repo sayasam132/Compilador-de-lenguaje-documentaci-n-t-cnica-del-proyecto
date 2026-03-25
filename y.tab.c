@@ -190,11 +190,10 @@ union YYSTYPE
     double f_val;    /* FLOAT_LIT y expr     */
     char   c_val;    /* CHAR_LIT             */
     int    b_val;    /* BOOL_LIT             */
-    char  *s_val;    /* STRING_LIT           */
+    char  *s_val;    /* STRING_LIT e IDENTIFIER */
     int    type_tag; /* tipos de dato        */
-    struct SymbolEntry *entry; /* IDENTIFIER */
 
-#line 198 "y.tab.c"
+#line 197 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -638,9 +637,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    50,    50,    51,    56,    57,    58,    67,    67,    76,
-      77,    78,    89,    93,    97,   108,   109,   110,   111,   112,
-     124,   125,   126,   127,   135,   140
+       0,    49,    49,    50,    55,    56,    57,    66,    66,    75,
+      76,    77,    91,    99,   105,   123,   124,   125,   126,   127,
+     146,   147,   148,   149,   157,   162
 };
 #endif
 
@@ -1225,123 +1224,140 @@ yyreduce:
   switch (yyn)
     {
   case 7: /* $@1: %empty  */
-#line 67 "parser.y"
+#line 66 "parser.y"
              { push_scope(); }
-#line 1231 "y.tab.c"
+#line 1230 "y.tab.c"
     break;
 
   case 8: /* block: LBRACE $@1 program RBRACE  */
-#line 67 "parser.y"
+#line 66 "parser.y"
                                               { pop_scope(); }
-#line 1237 "y.tab.c"
+#line 1236 "y.tab.c"
     break;
 
   case 9: /* num_type: T_NUM  */
-#line 76 "parser.y"
+#line 75 "parser.y"
                { (yyval.type_tag) = TYPE_NUM;    }
-#line 1243 "y.tab.c"
+#line 1242 "y.tab.c"
     break;
 
   case 10: /* num_type: T_DEC  */
-#line 77 "parser.y"
+#line 76 "parser.y"
                { (yyval.type_tag) = TYPE_DEC;    }
-#line 1249 "y.tab.c"
+#line 1248 "y.tab.c"
     break;
 
   case 11: /* num_type: T_LETTER  */
-#line 78 "parser.y"
+#line 77 "parser.y"
                { (yyval.type_tag) = TYPE_LETTER; }
-#line 1255 "y.tab.c"
+#line 1254 "y.tab.c"
     break;
 
   case 12: /* declaration: LET IDENTIFIER AS num_type ASSIGN expr  */
-#line 89 "parser.y"
+#line 91 "parser.y"
                                              {
-        (yyvsp[-4].entry)->data_type = (DataType)(yyvsp[-2].type_tag);
-        assign_numeric_value((yyvsp[-4].entry), (DataType)(yyvsp[-2].type_tag), (yyvsp[0].f_val));
+        SymbolEntry *e = create_entry((yyvsp[-4].s_val));
+        free((yyvsp[-4].s_val));
+        if (e) {
+            e->data_type = (DataType)(yyvsp[-2].type_tag);
+            assign_numeric_value(e, (DataType)(yyvsp[-2].type_tag), (yyvsp[0].f_val));
+        }
     }
-#line 1264 "y.tab.c"
+#line 1267 "y.tab.c"
     break;
 
   case 13: /* declaration: LET IDENTIFIER AS T_WORD ASSIGN STRING_LIT  */
-#line 93 "parser.y"
+#line 99 "parser.y"
                                                  {
-        (yyvsp[-4].entry)->data_type = TYPE_WORD;
-        assign_string_value((yyvsp[-4].entry), TYPE_WORD, (yyvsp[0].s_val));
+        SymbolEntry *e = create_entry((yyvsp[-4].s_val));
+        free((yyvsp[-4].s_val));
+        if (e) assign_string_value(e, TYPE_WORD, (yyvsp[0].s_val));
+        free((yyvsp[0].s_val));
     }
-#line 1273 "y.tab.c"
+#line 1278 "y.tab.c"
     break;
 
   case 14: /* declaration: LET IDENTIFIER AS T_BOOL ASSIGN BOOL_LIT  */
-#line 97 "parser.y"
+#line 105 "parser.y"
                                                {
-        (yyvsp[-4].entry)->data_type = TYPE_BOOL;
-        (yyvsp[-4].entry)->data.b_value = (yyvsp[0].b_val);
+        SymbolEntry *e = create_entry((yyvsp[-4].s_val));
+        free((yyvsp[-4].s_val));
+        if (e) {
+            e->data_type = TYPE_BOOL;
+            e->data.b_value = (yyvsp[0].b_val);
+        }
     }
-#line 1282 "y.tab.c"
+#line 1291 "y.tab.c"
     break;
 
   case 15: /* expr: INT_LIT  */
-#line 108 "parser.y"
+#line 123 "parser.y"
                            { (yyval.f_val) = (double)(yyvsp[0].i_val); }
-#line 1288 "y.tab.c"
+#line 1297 "y.tab.c"
     break;
 
   case 16: /* expr: FLOAT_LIT  */
-#line 109 "parser.y"
+#line 124 "parser.y"
                            { (yyval.f_val) = (yyvsp[0].f_val);          }
-#line 1294 "y.tab.c"
+#line 1303 "y.tab.c"
     break;
 
   case 17: /* expr: CHAR_LIT  */
-#line 110 "parser.y"
+#line 125 "parser.y"
                            { (yyval.f_val) = (double)(yyvsp[0].c_val);  }
-#line 1300 "y.tab.c"
+#line 1309 "y.tab.c"
     break;
 
   case 18: /* expr: BOOL_LIT  */
-#line 111 "parser.y"
+#line 126 "parser.y"
                            { (yyval.f_val) = (double)(yyvsp[0].b_val);  }
-#line 1306 "y.tab.c"
+#line 1315 "y.tab.c"
     break;
 
   case 19: /* expr: IDENTIFIER  */
-#line 112 "parser.y"
+#line 127 "parser.y"
                  {
-        switch ((yyvsp[0].entry)->data_type) {
-            case TYPE_NUM:    (yyval.f_val) = (double)(yyvsp[0].entry)->data.i_value; break;
-            case TYPE_DEC:    (yyval.f_val) = (yyvsp[0].entry)->data.d_value;          break;
-            case TYPE_LETTER: (yyval.f_val) = (double)(yyvsp[0].entry)->data.c_value;  break;
-            case TYPE_BOOL:   (yyval.f_val) = (double)(yyvsp[0].entry)->data.b_value;  break;
-            case TYPE_WORD:
-                printf("[ERROR] No se puede operar con tipo word\n");
-                (yyval.f_val) = 0;
-                break;
+        SymbolEntry *e = find_entry((yyvsp[0].s_val));
+        free((yyvsp[0].s_val));
+        if (!e) {
+            yyerror("Variable no declarada");
+            (yyval.f_val) = 0;
+        } else {
+            switch (e->data_type) {
+                case TYPE_NUM:    (yyval.f_val) = (double)e->data.i_value; break;
+                case TYPE_DEC:    (yyval.f_val) = e->data.d_value;          break;
+                case TYPE_LETTER: (yyval.f_val) = (double)e->data.c_value;  break;
+                case TYPE_BOOL:   (yyval.f_val) = (double)e->data.b_value;  break;
+                case TYPE_WORD:
+                    printf("[ERROR] No se puede operar con tipo word\n");
+                    (yyval.f_val) = 0;
+                    break;
+            }
         }
     }
-#line 1323 "y.tab.c"
+#line 1339 "y.tab.c"
     break;
 
   case 20: /* expr: expr PLUS expr  */
-#line 124 "parser.y"
+#line 146 "parser.y"
                       { (yyval.f_val) = (yyvsp[-2].f_val) + (yyvsp[0].f_val); }
-#line 1329 "y.tab.c"
+#line 1345 "y.tab.c"
     break;
 
   case 21: /* expr: expr MINUS expr  */
-#line 125 "parser.y"
+#line 147 "parser.y"
                       { (yyval.f_val) = (yyvsp[-2].f_val) - (yyvsp[0].f_val); }
-#line 1335 "y.tab.c"
+#line 1351 "y.tab.c"
     break;
 
   case 22: /* expr: expr STAR expr  */
-#line 126 "parser.y"
+#line 148 "parser.y"
                       { (yyval.f_val) = (yyvsp[-2].f_val) * (yyvsp[0].f_val); }
-#line 1341 "y.tab.c"
+#line 1357 "y.tab.c"
     break;
 
   case 23: /* expr: expr SLASH expr  */
-#line 127 "parser.y"
+#line 149 "parser.y"
                       {
         if ((yyvsp[0].f_val) == 0) {
             printf("[ERROR] Division entre cero\n");
@@ -1350,23 +1366,28 @@ yyreduce:
             (yyval.f_val) = (yyvsp[-2].f_val) / (yyvsp[0].f_val);
         }
     }
-#line 1354 "y.tab.c"
+#line 1370 "y.tab.c"
     break;
 
   case 24: /* expr: LPAREN expr RPAREN  */
-#line 135 "parser.y"
+#line 157 "parser.y"
                          { (yyval.f_val) = (yyvsp[-1].f_val); }
-#line 1360 "y.tab.c"
+#line 1376 "y.tab.c"
     break;
 
   case 25: /* show_stmt: SHOW IDENTIFIER  */
-#line 140 "parser.y"
-                      { print_entry((yyvsp[0].entry)); }
-#line 1366 "y.tab.c"
+#line 162 "parser.y"
+                      {
+        SymbolEntry *e = find_entry((yyvsp[0].s_val));
+        free((yyvsp[0].s_val));
+        if (e) print_entry(e);
+        else   yyerror("Variable no declarada");
+    }
+#line 1387 "y.tab.c"
     break;
 
 
-#line 1370 "y.tab.c"
+#line 1391 "y.tab.c"
 
       default: break;
     }
@@ -1559,7 +1580,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 143 "parser.y"
+#line 170 "parser.y"
 
 
 /* ── Manejo de errores sintacticos ─────────────────────── */

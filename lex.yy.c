@@ -916,18 +916,19 @@ case 28:
 YY_RULE_SETUP
 #line 61 "lexer.l"
 {
-    SymbolEntry *node = find_entry(yytext);
-    if (!node) node = create_entry(yytext);
-    yylval.entry = node;
+    /* El lexer solo entrega el nombre como cadena.
+     * Crear o buscar la entrada es responsabilidad del parser,
+     * segun el contexto (declaracion vs uso). */
+    yylval.s_val = strdup(yytext);
     return IDENTIFIER;
 }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 68 "lexer.l"
+#line 69 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 931 "lex.yy.c"
+#line 932 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1895,7 +1896,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 68 "lexer.l"
+#line 69 "lexer.l"
 
 
 int yywrap(void) { return 1; }
