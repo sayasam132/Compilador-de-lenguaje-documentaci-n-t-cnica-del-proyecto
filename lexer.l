@@ -14,19 +14,22 @@ ID      {LETTER}({LETTER}|{DIGIT})*
 WS      [ \t\r\n]+
 INT_NUM {DIGIT}+
 FLT_NUM {DIGIT}+"."{DIGIT}+
-STRING  \"(\\.|[^"\\])*\"
+STRING  \"(\\.|[^\"\\])*\"
 COMMENT      "--"[^\n]*
 COMMENT_BLOCK "---"([^-]|-[^-]|--[^-])*"---"
 
 %%
 
 {WS}            { }
-{COMMENT}       { }    /* -- comentario de una linea  */
-{COMMENT_BLOCK} { }    /* --- comentario de bloque --- */
+{COMMENT}       { }
+{COMMENT_BLOCK} { }
 
 "let"       { return LET;     }
 "as"        { return AS;      }
 "show"      { return SHOW;    }
+"func"      { return FUNC;    }
+"return"    { return RETURN;  }
+"->"        { return ARROW;   }
 
 "num"       { return T_NUM;    }
 "dec"       { return T_DEC;    }
@@ -37,21 +40,24 @@ COMMENT_BLOCK "---"([^-]|-[^-]|--[^-])*"---"
 "yes"       { yylval.b_val = 1; return BOOL_LIT; }
 "no"        { yylval.b_val = 0; return BOOL_LIT; }
 
-"="         { return ASSIGN;  }
-";"         { return SEMI;    }
-"+"         { return PLUS;    }
-"-"         { return MINUS;   }
-"*"         { return STAR;    }
-"/"         { return SLASH;   }
-"("         { return LPAREN;  }
-")"         { return RPAREN;  }
-"{"         { return LBRACE;  }
-"}"         { return RBRACE;  }
+"="         { return ASSIGN;   }
+","         { return COMMA;    }
+"["         { return LBRACKET; }
+"]"         { return RBRACKET; }
+";"         { return SEMI;     }
+"+"         { return PLUS;     }
+"-"         { return MINUS;    }
+"*"         { return STAR;     }
+"/"         { return SLASH;    }
+"("         { return LPAREN;   }
+")"         { return RPAREN;   }
+"{"         { return LBRACE;   }
+"}"         { return RBRACE;   }
 
 {FLT_NUM}   { yylval.f_val = atof(yytext); return FLOAT_LIT; }
 {INT_NUM}   { yylval.i_val = atoi(yytext); return INT_LIT;   }
 
-"'"."'"     { yylval.c_val = yytext[1];    return CHAR_LIT;  }
+"'"[^']"'"  { yylval.c_val = yytext[1]; return CHAR_LIT; }
 
 {STRING}    {
     yylval.s_val = strndup(yytext + 1, strlen(yytext) - 2);
@@ -59,9 +65,6 @@ COMMENT_BLOCK "---"([^-]|-[^-]|--[^-])*"---"
 }
 
 {ID}        {
-    /* El lexer solo entrega el nombre como cadena.
-     * Crear o buscar la entrada es responsabilidad del parser,
-     * segun el contexto (declaracion vs uso). */
     yylval.s_val = strdup(yytext);
     return IDENTIFIER;
 }

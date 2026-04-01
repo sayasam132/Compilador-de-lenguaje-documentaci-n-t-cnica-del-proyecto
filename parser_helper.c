@@ -46,7 +46,7 @@ void assign_string_value(SymbolEntry *entry, DataType type, char *value) {
 void print_entry(SymbolEntry *entry) {
     switch (entry->data_type) {
         case TYPE_NUM:    printf("%d\n",   entry->data.i_value); break;
-        case TYPE_DEC:    printf("%g\n",   entry->data.d_value); break;
+        case TYPE_DEC:    printf("%f\n", entry->data.d_value); break;
         case TYPE_LETTER: printf("%c\n",   entry->data.c_value); break;
         case TYPE_WORD:   printf("%s\n",   entry->data.s_value ? entry->data.s_value : ""); break;
         case TYPE_BOOL:   printf("%s\n",   entry->data.b_value ? "yes" : "no"); break;

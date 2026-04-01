@@ -1,0 +1,10 @@
+let a as num = 5;
+let b as num = 3;
+let sum as num = a + b;
+let diff as num = a - b;
+let prod as num = a * b;
+let quot as num = a / b;
+show sum;
+show diff;
+show prod;
+show quot;

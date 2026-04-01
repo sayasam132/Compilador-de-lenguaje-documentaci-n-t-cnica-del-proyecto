@@ -72,12 +72,21 @@ extern int yydebug;
     SLASH = 273,                   /* SLASH  */
     LBRACE = 274,                  /* LBRACE  */
     RBRACE = 275,                  /* RBRACE  */
-    IDENTIFIER = 276,              /* IDENTIFIER  */
-    INT_LIT = 277,                 /* INT_LIT  */
-    FLOAT_LIT = 278,               /* FLOAT_LIT  */
-    CHAR_LIT = 279,                /* CHAR_LIT  */
-    BOOL_LIT = 280,                /* BOOL_LIT  */
-    STRING_LIT = 281               /* STRING_LIT  */
+    VAR = 276,                     /* VAR  */
+    PRINT = 277,                   /* PRINT  */
+    FUNC = 278,                    /* FUNC  */
+    RETURN = 279,                  /* RETURN  */
+    ARROW = 280,                   /* ARROW  */
+    COLON = 281,                   /* COLON  */
+    COMMA = 282,                   /* COMMA  */
+    LBRACKET = 283,                /* LBRACKET  */
+    RBRACKET = 284,                /* RBRACKET  */
+    IDENTIFIER = 285,              /* IDENTIFIER  */
+    INT_LIT = 286,                 /* INT_LIT  */
+    FLOAT_LIT = 287,               /* FLOAT_LIT  */
+    CHAR_LIT = 288,                /* CHAR_LIT  */
+    BOOL_LIT = 289,                /* BOOL_LIT  */
+    STRING_LIT = 290               /* STRING_LIT  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -104,27 +113,48 @@ extern int yydebug;
 #define SLASH 273
 #define LBRACE 274
 #define RBRACE 275
-#define IDENTIFIER 276
-#define INT_LIT 277
-#define FLOAT_LIT 278
-#define CHAR_LIT 279
-#define BOOL_LIT 280
-#define STRING_LIT 281
+#define VAR 276
+#define PRINT 277
+#define FUNC 278
+#define RETURN 279
+#define ARROW 280
+#define COLON 281
+#define COMMA 282
+#define LBRACKET 283
+#define RBRACKET 284
+#define IDENTIFIER 285
+#define INT_LIT 286
+#define FLOAT_LIT 287
+#define CHAR_LIT 288
+#define BOOL_LIT 289
+#define STRING_LIT 290
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 14 "parser.y"
+#line 61 "parser.y"
 
-    int    i_val;    /* INT_LIT              */
-    double f_val;    /* FLOAT_LIT y expr     */
-    char   c_val;    /* CHAR_LIT             */
-    int    b_val;    /* BOOL_LIT             */
-    char  *s_val;    /* STRING_LIT e IDENTIFIER */
-    int    type_tag; /* tipos de dato        */
+    int      i_val;
+    double   f_val;
+    char     c_val;
+    int      b_val;
+    char    *s_val;
+    int      type_tag;
+    struct ASTNode *node;
+    struct {
+        struct ASTNode **list;
+        int count;
+        int cap;
+    } node_list;
+    struct {
+        char **names;
+        int  *types;
+        int   count;
+        int   cap;
+    } param_list;
 
-#line 128 "y.tab.h"
+#line 158 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
