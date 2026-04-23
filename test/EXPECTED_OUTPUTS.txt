@@ -1,0 +1,53 @@
+=== test_aritmetica_basica ===
+8
+2
+15
+1
+=== test_expresion_compleja ===
+11
+50
+=== test_dos_funciones ===
+6.000000
+7.000000
+=== test_orden_funciones ===
+10
+20
+15
+=== test_division_entera ===
+3
+3
+14
+=== test_aislamiento_ambito ===
+15
+100
+=== test_variables_locales ===
+20
+=== test_tipos_mixtos ===
+7.500000
+=== test_multiples_parametros ===
+60
+50
+=== test_llamadas_anidadas ===
+20
+17
+10
+=== test_sin_parametros ===
+10
+=== test_sombra_global ===
+5
+100
+=== test_un_parametro ===
+49
+=== test_dos_parametros ===
+40
+=== test_variables_como_args ===
+42
+=== test_si_simple ===
+1
+=== test_si_otra ===
+0
+=== test_si_anidado ===
+8
+=== test_si_en_funcion ===
+7
+9

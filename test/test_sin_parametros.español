@@ -1,0 +1,6 @@
+func obtener_diez() -> [num] {
+    retorna 10;
+}
+
+let x as num = obtener_diez();
+mostrar x;

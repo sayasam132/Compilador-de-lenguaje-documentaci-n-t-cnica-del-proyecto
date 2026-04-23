@@ -1,0 +1,8 @@
+let a as num = 5;
+let b as num = 3;
+si (a > 0) {
+    si (b > 0) {
+        let suma as num = a + b;
+        mostrar suma;
+    }
+}

@@ -1,0 +1,8 @@
+let edad as num = 17;
+si (edad >= 18) {
+    let r as num = 1;
+    mostrar r;
+} otra {
+    let r as num = 0;
+    mostrar r;
+}

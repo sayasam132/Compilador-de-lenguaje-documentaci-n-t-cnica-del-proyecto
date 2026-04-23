@@ -1,0 +1,6 @@
+func sumar([num]x, [num]y) -> [num] {
+    retorna x + y;
+}
+
+let resultado as num = sumar(15, 25);
+mostrar resultado;

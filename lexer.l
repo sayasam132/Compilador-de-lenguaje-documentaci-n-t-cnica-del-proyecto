@@ -1,6 +1,5 @@
 %{
 #include "y.tab.h"
-#include "symbols.h"
 #include <string.h>
 #include <stdlib.h>
 %}
@@ -26,18 +25,20 @@ COMMENT_BLOCK "---"([^-]|-[^-]|--[^-])*"---"
 
 "let"       { return LET;     }
 "as"        { return AS;      }
-"show"      { return SHOW;    }
+"mostrar"   { return SHOW;    }
 "func"      { return FUNC;    }
-"return"    { return RETURN;  }
+"retorna"   { return RETURN;  }
 "->"        { return ARROW;   }
+"si"        { return IF;      }
+"otra"      { return ELSE;    }
 
 "num"       { return T_NUM;    }
 "dec"       { return T_DEC;    }
-"letter"    { return T_LETTER; }
-"word"      { return T_WORD;   }
+"car"       { return T_LETTER; }
+"pal"       { return T_WORD;   }
 "bool"      { return T_BOOL;   }
 
-"yes"       { yylval.b_val = 1; return BOOL_LIT; }
+"verdad"    { yylval.b_val = 1; return BOOL_LIT; }
 "no"        { yylval.b_val = 0; return BOOL_LIT; }
 
 "="         { return ASSIGN;   }
@@ -53,6 +54,12 @@ COMMENT_BLOCK "---"([^-]|-[^-]|--[^-])*"---"
 ")"         { return RPAREN;   }
 "{"         { return LBRACE;   }
 "}"         { return RBRACE;   }
+"=="        { return EQ;      }
+"!="        { return NEQ;     }
+"<="        { return LE;      }
+">="        { return GE;      }
+"<"         { return LT;      }
+">"         { return GT;      }
 
 {FLT_NUM}   { yylval.f_val = atof(yytext); return FLOAT_LIT; }
 {INT_NUM}   { yylval.i_val = atoi(yytext); return INT_LIT;   }

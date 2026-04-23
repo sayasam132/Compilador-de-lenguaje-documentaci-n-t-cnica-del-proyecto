@@ -1,0 +1,30 @@
+Entregables de Investigación 
+1. Reporte de Colisiones: ¿Cómo maneja tu tabla de símbolos si el usuario declara int x e int x en el mismo nivel? 
+Cuando el usuario intenta declarar dos veces la misma variable en el mismo bloque, por ejemplo let x as num = 10; 
+seguido de otro let x as num = 20;, la funcion create_entry detecta el problema antes de insertar nada. Osea lo que hace es 
+recorrer la tabla del scope actual buscando si ya existe un nodo con ese mismo nombre si lo encuentra 
+imprime el error [ERROR] Variable 'x' ya declarada en este nivel y retorna NULL sin crear ningun nodo nuevo por lo que 
+la segunda declaracion simplemente no existe. Lo que importa es que esta verificacion solo ocurre dentro del nivel activo en 
+ese momento, no en los niveles anteriores
+porque declarar la misma variable en bloques distintos no es un error sino shadowing, que es un comportamiento completamente 
+valido e intencional del lenguaje.
+
+2. Análisis de Memoria: Explica qué sucede con la dirección de memoria (offset) de una variable cuando el ámbito se cierra. 
+Cuando un bloque cierra y se ejecuta pop_scope(), todas las variables que fueron declaradas dentro de ese bloque dejan de existir 
+completamente en memoria. La funcion recorre la tabla del nivel activo y por cada nodo libera el string del identificador que fue 
+creado con strdup, libera el valor s_value si la variable era de tipo word, libera el nodo SymbolEntry completo, y finalmente libera 
+el ScopeLevel mismo bajando el puntero current_scope al nivel anterior. Como el lenguaje es interpretado y no genera codigo maquina, 
+no existe un offset de stack en el sentido clasico de un compilador tradicional. La direccion de memoria de una variable era simplemente 
+el puntero al nodo en el heap, y en cuanto pop_scope hace free de ese nodo el puntero queda invalido. Cualquier intento de acceder a esa 
+variable despues del cierre del bloque falla porque find_entry ya no la encuentra en ninguno de los niveles que quedaron en la pila.
+
+
+3. Prueba de Fuego: Procesa un código con 3 niveles de anidamiento y demuestra que el compilador siempre elige el valor correcto.
+Para demostrar que el compilador siempre elige el valor correcto se ejecuto un programa con tres niveles de anidamiento donde la misma variable x 
+fue declarada en cada uno con un valor distinto: x = 1 en el scope global, x = 42 dentro del primer bloque, y x = 99 dentro del bloque mas interno 
+cada vez que se ejecuto show x, find_entry empezo a buscar desde el tope de la pila hacia abajo y se detuvo en el primer nivel donde encontro el nombre, 
+devolviendo exactamente el valor del bloque mas cercano la salida del compilador fue 99 dentro del bloque mas interno, 42 al cerrar ese bloque y volver 
+al nivel intermedio, y 1 al cerrar el segundo bloque y quedar solo el scope global. Esto demuestra que la estructura de pila refleja con precision el 
+anidamiento del codigo y el shadowing funciona correctamente en todos los niveles.
+
+

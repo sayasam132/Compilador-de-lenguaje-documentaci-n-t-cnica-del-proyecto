@@ -1,0 +1,8 @@
+func variables_locales([num]x) -> [num] {
+    let y as num = x * 2;
+    let z as num = y + 10;
+    retorna z;
+}
+
+let resultado as num = variables_locales(5);
+mostrar resultado;

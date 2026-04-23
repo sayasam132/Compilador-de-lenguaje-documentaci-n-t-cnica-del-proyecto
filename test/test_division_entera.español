@@ -1,0 +1,10 @@
+func dividir([num]x, [num]y) -> [num] {
+    retorna x / y;
+}
+
+let r1 as num = dividir(10, 3);
+let r2 as num = dividir(7, 2);
+let r3 as num = dividir(100, 7);
+mostrar r1;
+mostrar r2;
+mostrar r3;

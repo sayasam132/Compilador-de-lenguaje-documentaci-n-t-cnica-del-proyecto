@@ -1,0 +1,14 @@
+func exterior([num]a) -> [num] {
+    let b as num = a + 5;
+    retorna b;
+}
+
+func interior([num]x) -> [num] {
+    let b as num = x * 10;
+    retorna b;
+}
+
+let r1 as num = exterior(10);
+let r2 as num = interior(10);
+mostrar r1;
+mostrar r2;

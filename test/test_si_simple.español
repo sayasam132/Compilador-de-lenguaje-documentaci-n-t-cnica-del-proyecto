@@ -1,0 +1,5 @@
+let x as num = 10;
+si (x > 5) {
+    let r as num = 1;
+    mostrar r;
+}

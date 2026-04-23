@@ -1,0 +1,16 @@
+func sumar([num]x, [num]y) -> [num] {
+    retorna x + y;
+}
+
+func multiplicar([num]x, [num]y) -> [num] {
+    retorna x * y;
+}
+
+func dividir([num]x, [num]y) -> [num] {
+    retorna x / y;
+}
+
+let r1 as num = sumar(multiplicar(2, 3), dividir(10, 2));
+let r2 as num = multiplicar(sumar(5, 5), sumar(2, 3));
+mostrar r1;
+mostrar r2;

@@ -1,0 +1,10 @@
+let a as num = 5;
+let b as num = 3;
+let suma as num = a + b;
+let diferencia as num = a - b;
+let producto as num = a * b;
+let cociente as num = a / b;
+mostrar suma;
+mostrar diferencia;
+mostrar producto;
+mostrar cociente;

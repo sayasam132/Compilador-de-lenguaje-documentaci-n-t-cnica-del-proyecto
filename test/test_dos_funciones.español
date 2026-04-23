@@ -1,0 +1,12 @@
+func sumar_decimal([dec]x, [dec]y) -> [dec] {
+    retorna x + y;
+}
+
+func multiplicar_decimal([dec]x, [dec]y) -> [dec] {
+    retorna x * y;
+}
+
+let r1 as dec = sumar_decimal(3.5, 2.5);
+let r2 as dec = multiplicar_decimal(2.0, 3.5);
+mostrar r1;
+mostrar r2;

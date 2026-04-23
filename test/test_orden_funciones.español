@@ -1,0 +1,18 @@
+func segunda([num]x) -> [num] {
+    retorna x + 10;
+}
+
+func primera([num]x) -> [num] {
+    retorna x * 2;
+}
+
+func tercera([num]x) -> [num] {
+    retorna x - 5;
+}
+
+let r1 as num = primera(5);
+let r2 as num = segunda(10);
+let r3 as num = tercera(20);
+mostrar r1;
+mostrar r2;
+mostrar r3;

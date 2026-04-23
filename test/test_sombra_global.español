@@ -1,0 +1,10 @@
+func sombra_global() -> [num] {
+    let x as num = 100;
+    retorna x;
+}
+
+let x as num = 5;
+let global as num = x;
+let local as num = sombra_global();
+mostrar global;
+mostrar local;

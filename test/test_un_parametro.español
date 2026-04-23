@@ -1,0 +1,6 @@
+func cuadrado([num]x) -> [num] {
+    retorna x * x;
+}
+
+let resultado as num = cuadrado(7);
+mostrar resultado;

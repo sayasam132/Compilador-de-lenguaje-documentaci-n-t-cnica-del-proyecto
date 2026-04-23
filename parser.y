@@ -2,14 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "symbols.h"
-#include "parser_helper.h"
+#include "scope.h"
 #include "ast.h"
-#include "interpreter.h"
 
 int  yylex(void);
 void yyerror(const char *s);
-extern FILE *yyin;
 
 /*     Lista dinamica de sentencias del programa global     */
 static ASTNode **g_stmts = NULL;
@@ -83,6 +80,8 @@ static ASTNode *f_end(void) {
 %token T_NUM T_DEC T_LETTER T_WORD T_BOOL
 %token PLUS MINUS STAR SLASH LBRACE RBRACE
 %token FUNC RETURN ARROW COMMA LBRACKET RBRACKET
+%token IF ELSE
+%token EQ NEQ LT GT LE GE
 
 /*    Tokens con valor                                       */
 %token <s_val>   IDENTIFIER
@@ -92,13 +91,16 @@ static ASTNode *f_end(void) {
 %token <b_val>   BOOL_LIT
 %token <s_val>   STRING_LIT
 
-/*    Precedencia                                            */
+/*    Precedencia (de menor a mayor)                        */
+%left  EQ NEQ
+%left  LT GT LE GE
 %left  PLUS MINUS
 %left  STAR SLASH
+%right UMINUS
 
 /*    Tipos de no-terminales                                 */
 %type <type_tag>   num_type
-%type <node>       expr
+%type <node>       expr if_stmt if_body
 %type <node_list>  arg_list arg_list_ne
 %type <param_list> param_list param_list_ne
 
@@ -126,7 +128,10 @@ global_stmt
         { g_push(ast_show($2)); free($2); }
 
     /*    Bloque { } global                                  */
-    | LBRACE { push_scope(); } program RBRACE { pop_scope(); }
+    | if_body { g_push($1); }
+
+    /*    Sentencia if global                                */
+    | if_stmt { g_push($1); }
 
     /*    Declaracion de funcion                             */
     | FUNC IDENTIFIER LPAREN param_list RPAREN
@@ -163,6 +168,8 @@ func_stmt
         { f_push(ast_show($2)); free($2); }
     | RETURN expr SEMI
         { f_push(ast_return($2)); }
+    | if_stmt  { f_push($1); }
+    | if_body  { f_push($1); }
     ;
 
 /*    Tipo de dato                                            */
@@ -240,7 +247,27 @@ expr
     | expr MINUS expr                   { $$ = ast_binary_op(OP_SUB, $1, $3); }
     | expr STAR  expr                   { $$ = ast_binary_op(OP_MUL, $1, $3); }
     | expr SLASH expr                   { $$ = ast_binary_op(OP_DIV, $1, $3); }
+    | expr EQ    expr                   { $$ = ast_binary_op(OP_EQ,  $1, $3); }
+    | expr NEQ   expr                   { $$ = ast_binary_op(OP_NEQ, $1, $3); }
+    | expr LT    expr                   { $$ = ast_binary_op(OP_LT,  $1, $3); }
+    | expr GT    expr                   { $$ = ast_binary_op(OP_GT,  $1, $3); }
+    | expr LE    expr                   { $$ = ast_binary_op(OP_LE,  $1, $3); }
+    | expr GE    expr                   { $$ = ast_binary_op(OP_GE,  $1, $3); }
+    | MINUS expr %prec UMINUS           { $$ = ast_binary_op(OP_SUB, ast_literal_int(0), $2); }
     | LPAREN expr RPAREN                { $$ = $2; }
+    ;
+
+/*    Cuerpo de un bloque if { ... }                         */
+if_body
+    : LBRACE { f_begin(); } func_stmts RBRACE { $$ = f_end(); }
+    ;
+
+/*    Sentencia if / if-else                                 */
+if_stmt
+    : IF LPAREN expr RPAREN if_body
+      { $$ = ast_if($3, $5, NULL); }
+    | IF LPAREN expr RPAREN if_body ELSE if_body
+      { $$ = ast_if($3, $5, $7); }
     ;
 
 %%
@@ -249,30 +276,7 @@ void yyerror(const char *s) {
     fprintf(stderr, "[ERROR] %s\n", s);
 }
 
-int main(int argc, char **argv) {
-    if (argc > 1) {
-        FILE *f = fopen(argv[1], "r");
-        if (!f) {
-            fprintf(stderr, "[ERROR] No se pudo abrir: %s\n", argv[1]);
-            return 1;
-        }
-        yyin = f;
-    }
-
-    push_scope();
-    interpreter_init();
-
-    int result = yyparse();
-
-    if (result == 0 && g_count > 0) {
-        ASTNode *program = ast_program(g_stmts, g_count);
-        interpreter_run(program);
-        ast_free(program);
-    }
-
-    interpreter_destroy();
-    pop_scope();
-
-    if (argc > 1) fclose(yyin);
-    return result;
+ASTNode *build_program(void) {
+    if (g_count == 0) return NULL;
+    return ast_program(g_stmts, g_count);
 }

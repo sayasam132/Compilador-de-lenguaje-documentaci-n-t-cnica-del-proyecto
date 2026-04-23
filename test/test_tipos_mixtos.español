@@ -1,0 +1,8 @@
+func sumar_mixto([num]x, [dec]y) -> [dec] {
+    retorna x + y;
+}
+
+let entero as num = 5;
+let decimal as dec = 2.5;
+let resultado as dec = sumar_mixto(entero, decimal);
+mostrar resultado;

@@ -1,0 +1,12 @@
+func sumar_tres([num]a, [num]b, [num]c) -> [num] {
+    retorna a + b + c;
+}
+
+func sumar_cuatro([num]w, [num]x, [num]y, [num]z) -> [num] {
+    retorna w + x + y + z;
+}
+
+let r1 as num = sumar_tres(10, 20, 30);
+let r2 as num = sumar_cuatro(5, 10, 15, 20);
+mostrar r1;
+mostrar r2;

@@ -1,0 +1,8 @@
+func multiplicar([num]x, [num]y) -> [num] {
+    retorna x * y;
+}
+
+let num1 as num = 7;
+let num2 as num = 6;
+let resultado as num = multiplicar(num1, num2);
+mostrar resultado;

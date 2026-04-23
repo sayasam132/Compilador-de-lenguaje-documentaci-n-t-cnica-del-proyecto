@@ -1,0 +1,12 @@
+func maximo([num]a, [num]b) -> [num] {
+    si (a > b) {
+        retorna a;
+    } otra {
+        retorna b;
+    }
+}
+
+let r1 as num = maximo(7, 4);
+let r2 as num = maximo(2, 9);
+mostrar r1;
+mostrar r2;
